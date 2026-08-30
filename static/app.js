@@ -22,7 +22,8 @@ let crop = { x: 0, y: 0, size: 1 }; // Coordinates in the 720 × 720 canvas.
 let interaction = null;
 
 function calculateDisplay() {
-  const scale = Math.min(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
+  const workspaceSize = Math.min(canvas.width, canvas.height) * 0.8;
+  const scale = Math.min(workspaceSize / image.naturalWidth, workspaceSize / image.naturalHeight);
   const width = image.naturalWidth * scale;
   const height = image.naturalHeight * scale;
   display = { x: (canvas.width - width) / 2, y: (canvas.height - height) / 2, width, height, scale };
@@ -40,14 +41,6 @@ function resetCrop() {
   render();
 }
 
-function sourceCrop() {
-  return {
-    x: (crop.x - display.x) / display.scale,
-    y: (crop.y - display.y) / display.scale,
-    size: crop.size / display.scale,
-  };
-}
-
 function positionCropBox() {
   const sx = canvasWrap.clientWidth / canvas.width;
   const sy = canvasWrap.clientHeight / canvas.height;
@@ -61,28 +54,49 @@ function positionCropBox() {
 function render() {
   if (!image) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#e9e9e6';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  drawCheckerboard(ctx, canvas.width, canvas.height);
   ctx.drawImage(image, display.x, display.y, display.width, display.height);
 
-  // A four-sided overlay leaves the selected area clear.
+  // Dim everything, then redraw the selected area at full brightness.
   ctx.fillStyle = 'rgba(10, 12, 11, .56)';
-  ctx.fillRect(display.x, display.y, display.width, crop.y - display.y);
-  ctx.fillRect(display.x, crop.y + crop.size, display.width, display.y + display.height - crop.y - crop.size);
-  ctx.fillRect(display.x, crop.y, crop.x - display.x, crop.size);
-  ctx.fillRect(crop.x + crop.size, crop.y, display.x + display.width - crop.x - crop.size, crop.size);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(crop.x, crop.y, crop.size, crop.size);
+  ctx.clip();
+  drawCheckerboard(ctx, canvas.width, canvas.height);
+  ctx.drawImage(image, display.x, display.y, display.width, display.height);
+  ctx.restore();
   positionCropBox();
 
-  const source = sourceCrop();
   previewCtx.clearRect(0, 0, 512, 512);
-  previewCtx.drawImage(image, source.x, source.y, source.size, source.size, 0, 0, 512, 512);
+  const previewScale = 512 / crop.size;
+  previewCtx.drawImage(
+    image,
+    (display.x - crop.x) * previewScale,
+    (display.y - crop.y) * previewScale,
+    display.width * previewScale,
+    display.height * previewScale,
+  );
+}
+
+function drawCheckerboard(context, width, height) {
+  const tile = 18;
+  context.fillStyle = '#f3f3f1';
+  context.fillRect(0, 0, width, height);
+  context.fillStyle = '#dededb';
+  for (let y = 0; y < height; y += tile) {
+    for (let x = (y / tile) % 2 ? tile : 0; x < width; x += tile * 2) {
+      context.fillRect(x, y, tile, tile);
+    }
+  }
 }
 
 function clampCrop() {
-  const minSize = Math.min(90, Math.min(display.width, display.height));
-  crop.size = Math.max(minSize, Math.min(crop.size, display.width, display.height));
-  crop.x = Math.max(display.x, Math.min(crop.x, display.x + display.width - crop.size));
-  crop.y = Math.max(display.y, Math.min(crop.y, display.y + display.height - crop.size));
+  const minSize = 90;
+  crop.size = Math.max(minSize, Math.min(crop.size, canvas.width, canvas.height));
+  crop.x = Math.max(0, Math.min(crop.x, canvas.width - crop.size));
+  crop.y = Math.max(0, Math.min(crop.y, canvas.height - crop.size));
 }
 
 function loadFile(nextFile) {
