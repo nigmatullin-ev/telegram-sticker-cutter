@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f1ea">
+  <title>Sticker Cutter — Telegram Sticker Maker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Sticker Cutter">
+      <span class="brand-mark">SC</span>
+      <span>Sticker Cutter</span>
+    </a>
+    <span class="status">512 × 512 px</span>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div><h1>Crop your image</h1><p>Prepare a static sticker for Telegram.</p></div>
+      <span>PNG / WebP · up to 20 MB</span>
+    </section>
+
+    <section class="workspace">
+      <div class="editor-card">
+        <div class="card-heading">
+          <div><h2>Image</h2></div>
+          <button class="text-button" id="changeButton" type="button" hidden>Replace image</button>
+        </div>
+
+        <label class="dropzone" id="dropzone">
+          <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <span class="upload-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+          </span>
+          <strong>Drop an image here</strong>
+          <span>or click to choose a file</span>
+          <small>JPG, PNG, or WebP · up to 20 MB</small>
+        </label>
+
+        <div class="canvas-wrap" id="canvasWrap" hidden>
+          <canvas id="canvas" width="720" height="720" aria-label="Crop preview"></canvas>
+          <div class="crop-box" id="cropBox" aria-label="Crop area">
+            <div class="crop-guides" aria-hidden="true"></div>
+            <span class="resize-handle" data-action="resize" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="zoom-row" id="zoomRow" hidden>
+          <span class="crop-help">Move the frame and drag its corner to resize it</span>
+          <button id="resetButton" class="reset-button" type="button">Reset frame</button>
+        </div>
+      </div>
+
+      <aside class="export-card">
+        <div class="card-heading"><div><h2>Result</h2></div></div>
+        <div class="preview-box"><canvas id="preview" width="512" height="512"></canvas><span id="previewEmpty">Your sticker<br>will appear here</span></div>
+        <div class="specs">
+          <div><span>Size</span><strong>512 × 512 px</strong></div>
+          <div><span>Format</span><strong id="formatLabel">WebP</strong></div>
+          <div><span>Limit</span><strong>up to 512 KB</strong></div>
+        </div>
+        <div class="format-switch" role="group" aria-label="File format">
+          <button class="active" data-format="webp" type="button">WebP <small>recommended</small></button>
+          <button data-format="png" type="button">PNG <small>lossless*</small></button>
+        </div>
+        <button class="download-button" id="downloadButton" type="button" disabled>
+          <span>Download sticker</span><span>↓</span>
+        </button>
+        <p class="message" id="message" role="status"></p>
+      </aside>
+    </section>
+  </main>
+
+  <footer>Images are processed on the server and are not stored. *Large PNG files may be optimized to meet Telegram's size limit.</footer>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
