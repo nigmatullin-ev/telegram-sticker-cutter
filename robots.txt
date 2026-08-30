@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://telegram-sticker-cutter.pages.dev/sitemap.xml

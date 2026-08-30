@@ -1,0 +1,17 @@
+# Sticker Cutter
+
+> A free, private browser-based tool for cropping images into Telegram-ready static stickers.
+
+Sticker Cutter creates 512 × 512 pixel PNG or WebP stickers. Images are processed entirely in the user's browser and are never uploaded, transmitted, or stored by a server.
+
+## Main page
+
+- [Telegram Sticker Cutter](https://telegram-sticker-cutter.pages.dev/): Upload an image locally, position and resize a square crop frame, include transparent space outside the image if needed, preview the result, and download a Telegram-ready sticker.
+
+## Key facts
+
+- Free to use; no account required.
+- Supports JPG, PNG, and WebP source images up to 20 MB.
+- Exports static stickers at 512 × 512 pixels as WebP or PNG.
+- WebP export is compressed in-browser to meet Telegram's 512 KB limit.
+- No image data leaves the browser.

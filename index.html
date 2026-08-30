@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f1ea">
+  <title>Telegram Sticker Maker — Crop Images to 512×512 Online</title>
+  <meta name="description" content="Create Telegram stickers online for free. Crop JPG, PNG, or WebP images to 512×512, add transparent space, and export privately in your browser.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <meta name="author" content="nigmatullin-ev">
+  <link rel="canonical" href="https://telegram-sticker-cutter.pages.dev/">
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM information">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sticker Cutter">
+  <meta property="og:title" content="Telegram Sticker Maker — Crop Images Online">
+  <meta property="og:description" content="Turn any image into a private, Telegram-ready 512×512 PNG or WebP sticker directly in your browser.">
+  <meta property="og:url" content="https://telegram-sticker-cutter.pages.dev/">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Telegram Sticker Maker — Sticker Cutter">
+  <meta name="twitter:description" content="Crop and export Telegram-ready stickers privately in your browser.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Sticker Cutter",
+    "url": "https://telegram-sticker-cutter.pages.dev/",
+    "description": "A free, private online Telegram sticker maker that crops images to 512 × 512 pixels and exports PNG or WebP files.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires a modern web browser with Canvas and WebP support",
+    "isAccessibleForFree": true,
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "featureList": ["512 × 512 Telegram sticker export", "PNG and WebP support", "Transparent background support", "Private in-browser image processing", "No registration required"]
+  }
+  </script>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Sticker Cutter"><span class="brand-mark">SC</span><span>Sticker Cutter</span></a>
+    <span class="status">512 × 512 px</span>
+  </header>
+  <main>
+    <section class="intro">
+      <div><h1>Crop your image</h1><p>Prepare a static sticker for Telegram.</p></div>
+      <span>PNG / WebP · up to 20 MB</span>
+    </section>
+    <section class="workspace">
+      <div class="editor-card">
+        <div class="card-heading"><div><h2>Image</h2></div><button class="text-button" id="changeButton" type="button" hidden>Replace image</button></div>
+        <label class="dropzone" id="dropzone">
+          <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <span class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg></span>
+          <strong>Drop an image here</strong><span>or click to choose a file</span><small>JPG, PNG, or WebP · up to 20 MB</small>
+        </label>
+        <div class="canvas-wrap" id="canvasWrap" hidden>
+          <canvas id="canvas" width="720" height="720" aria-label="Crop preview"></canvas>
+          <div class="crop-box" id="cropBox" aria-label="Crop area"><div class="crop-guides" aria-hidden="true"></div><span class="resize-handle" data-action="resize" aria-hidden="true"></span></div>
+        </div>
+        <div class="zoom-row" id="zoomRow" hidden><span class="crop-help">Move or resize the frame — areas outside the image stay transparent</span><button id="resetButton" class="reset-button" type="button">Reset frame</button></div>
+      </div>
+      <aside class="export-card">
+        <div class="card-heading"><div><h2>Result</h2></div></div>
+        <div class="preview-box"><canvas id="preview" width="512" height="512"></canvas><span id="previewEmpty">Your sticker<br>will appear here</span></div>
+        <div class="specs"><div><span>Size</span><strong>512 × 512 px</strong></div><div><span>Format</span><strong id="formatLabel">WebP</strong></div><div><span>Limit</span><strong>up to 512 KB</strong></div></div>
+        <div class="format-switch" role="group" aria-label="File format"><button class="active" data-format="webp" type="button">WebP <small>recommended</small></button><button data-format="png" type="button">PNG <small>lossless*</small></button></div>
+        <button class="download-button" id="downloadButton" type="button" disabled><span>Download sticker</span><span>↓</span></button>
+        <p class="message" id="message" role="status"></p>
+      </aside>
+    </section>
+    <section class="about" aria-labelledby="about-title">
+      <div><p class="section-label">Private by design</p><h2 id="about-title">Make Telegram stickers without uploading your photos</h2></div>
+      <div class="about-copy"><p>Sticker Cutter turns JPG, PNG, and WebP images into static 512 × 512 Telegram stickers. Move and resize the crop frame, leave transparent space around the image, then export as WebP or PNG.</p><p>All editing and encoding happen inside your browser. Your source image is never sent to a server, stored, or shared.</p></div>
+    </section>
+  </main>
+  <footer>Images never leave your browser and are not stored anywhere. *Use WebP if a lossless PNG exceeds Telegram's size limit.</footer>
+  <script src="static/app.js"></script>
+</body>
+</html>
