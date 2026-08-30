@@ -96,8 +96,8 @@ function loadFile(nextFile) {
   const url = URL.createObjectURL(nextFile);
   const nextImage = new Image();
   nextImage.onload = () => {
-    if (image) URL.revokeObjectURL(image.src);
     file = nextFile; image = nextImage;
+    URL.revokeObjectURL(url);
     dropzone.hidden = true; canvasWrap.hidden = false; zoomRow.hidden = false; changeButton.hidden = false;
     preview.classList.add('ready'); previewEmpty.hidden = true; downloadButton.disabled = false; message.textContent = '';
     resetCrop();
@@ -150,16 +150,34 @@ document.querySelectorAll('.format-switch button').forEach(button => button.addE
   $('#formatLabel').textContent = format === 'webp' ? 'WebP' : 'PNG';
 }));
 
+function encodeCanvas(type, quality) {
+  return new Promise(resolve => preview.toBlob(resolve, type, quality));
+}
+
+async function createStickerBlob() {
+  if (format === 'png') {
+    const blob = await encodeCanvas('image/png');
+    if (!blob) throw new Error('PNG export is not supported by this browser.');
+    if (blob.size > 512 * 1024) {
+      throw new Error('This lossless PNG exceeds 512 KB. Choose WebP to meet Telegram’s limit.');
+    }
+    return blob;
+  }
+
+  let blob = null;
+  for (const quality of [0.92, 0.86, 0.80, 0.74, 0.68, 0.60, 0.52, 0.44]) {
+    blob = await encodeCanvas('image/webp', quality);
+    if (!blob || blob.type !== 'image/webp') throw new Error('WebP export is not supported by this browser.');
+    if (blob.size <= 512 * 1024) return blob;
+  }
+  throw new Error('The sticker could not be compressed below 512 KB.');
+}
+
 downloadButton.addEventListener('click', async () => {
   if (!file) return;
   downloadButton.disabled = true; message.textContent = 'Preparing the file…';
-  const source = sourceCrop();
-  const data = new FormData();
-  data.append('image', file); data.append('x', source.x); data.append('y', source.y); data.append('size', source.size); data.append('format', format);
   try {
-    const response = await fetch('/api/sticker', { method: 'POST', body: data });
-    if (!response.ok) { const body = await response.json(); throw new Error(body.error || 'The sticker could not be created.'); }
-    const blob = await response.blob();
+    const blob = await createStickerBlob();
     const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `telegram-sticker.${format}`; link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
     message.textContent = `Ready · ${(blob.size / 1024).toFixed(0)} KB`;

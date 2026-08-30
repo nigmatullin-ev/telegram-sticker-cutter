@@ -2,6 +2,8 @@
 
 A web app for cropping images and exporting 512 × 512 px Telegram stickers.
 
+Images are processed entirely in the browser. They are never uploaded to the server or stored by the app.
+
 ## Run locally
 
 ```bash
